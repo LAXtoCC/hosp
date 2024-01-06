@@ -33,7 +33,34 @@ typedef struct {
     char department[20];
     char time_slot[20];
 } Registration;
- 
+ typedef struct {
+    char name[50];
+    float price;
+} Medicine;
+
+Medicine medicines[] = {
+    {"感冒药", 10.0},
+    {"止咳糖浆", 15.0},
+    {"消炎药", 20.0},
+    {"降压药", 25.0},
+    {"止痛片", 30.0},
+    {"抗生素", 35.0},
+    {"维生素", 40.0},
+    {"钙片", 45.0},
+    {"安眠药", 50.0},
+    {"补血药", 55.0}
+};
+const int NUM_MEDICINES = sizeof(medicines) / sizeof(medicines[0]);
+
+// 定义结构体保存待支付费用信息
+typedef struct {
+    char username[20];
+    float amount_due;
+} Payment;
+
+Payment payments[100];
+int payment_count = 0;
+
 // 定义数组保存用户、医生和挂号信息
 User users[100];
 Doctor doctors[20];
@@ -49,9 +76,12 @@ void showDepartments();
 void showDoctors(char department[]);
 int makeAppointment(char username[], char time_slot[20]);
 void viewRegistrationDetails(char username[]);
-void viewRegistrationHistory(char username[]);
+int viewRegistrationHistory(char username[]);
 void cancelAppointment(char username[]);
 void giveFeedback();
+void seeDoctor(char username[]);
+void makePayment(char username[]);
+void hospitalmanagement(char username[]);
  
 int main() {
     int choice;
@@ -84,7 +114,7 @@ int main() {
                 if (loginUser()) {
                     int loggedIn = 1;
                     while (loggedIn) {
-                        printf("\n1. 预约挂号\n2. 查询挂号\n3. 取消预约\n4. 反馈和评价\n5. 退出\n请选择操作：");
+                        printf("\n1. 预约挂号\n2. 查询挂号\n3. 取消预约\n4. 反馈和评价\n5. 看病\n6. 缴费\n7. 住院管理\n9. 退出\n请选择操作：");
                         scanf("%d", &choice);
  
                         switch (choice) {
@@ -101,6 +131,15 @@ int main() {
                                 giveFeedback();
                                 break;
                             case 5:
+                                seeDoctor(users[user_count - 1].username);
+                                break;
+                            case 6:
+                                makePayment(users[user_count - 1].username);
+                                break;
+                            case 7:
+                            	hospitalmanagement(users[user_count - 1].username);
+                                break;
+                            case 9:
                                 loggedIn = 0;
                                 break;
                             default:
@@ -250,14 +289,19 @@ int makeAppointment(char username[], char time_slot[20]) {
     return 1; // 挂号成功
 }
  
-void viewRegistrationHistory(char username[]) {
+int viewRegistrationHistory(char username[]) {
     printf("\n--- 挂号历史 ---\n");
- 
+    int found = 0;
     for (int i = 0; i < registration_count; i++) {
         if (strcmp(registrations[i].username, username) == 0) {
             printf("%d. 医生：%s，科室：%s，时间段：%s\n", i+1, registrations[i].doctor_name, registrations[i].department, registrations[i].time_slot);
+            found = 1;
         }
     }
+    if (!found) {
+        printf("没有找到挂号记录。\n");
+    }
+    return found;
 }
 
 void cancelAppointment(char username[]) {
@@ -285,7 +329,142 @@ void cancelAppointment(char username[]) {
         printf("无效的挂号序号。\n");
     }
 }
- 
+
+void seeDoctor(char username[]) {
+    printf("\n--- 看病 ---\n");
+    int found = viewRegistrationHistory(username);
+    if (!found) {
+        return;
+    }
+    int registration_number; int random_number;
+    printf("请输入挂号记录编号进行看病操作或输入0返回：");
+    scanf("%d", &registration_number);
+    if (registration_number == 0) {
+        return;
+    } else if (registration_number > 0 && registration_number <= registration_count) {
+        printf("请描述你的症状：");
+        scanf("%d", &random_number);
+    } else {
+        printf("无效的挂号记录编号。\n");
+        return;
+    }
+    // 如果随机数大于10，建议病人住院治疗
+    if (random_number > 10) {
+        printf("建议病人住院治疗。");
+        
+        // 额外加上60元的费用
+        for (int i = 0; i < payment_count; i++) {
+            if (strcmp(payments[i].username, username) == 0) {
+                payments[i].amount_due += 60.0;  // 加上60元
+                return;  // 直接返回，不执行后续看病的逻辑
+            }
+        }
+
+        // 如果用户还没有在缴费记录中，添加新的记录
+        strcpy(payments[payment_count].username, username);
+        payments[payment_count].amount_due = 60.0;
+        payment_count++;
+
+        return;  // 直接返回，不执行后续看病的逻辑
+    }
+
+    // 随机选择药品并输出信息，缴费逻辑保持不变
+    int medicine_index = random_number % NUM_MEDICINES;
+    Medicine prescribed_medicine = medicines[medicine_index];
+    
+    printf("根据您的症状，医生为您开出了以下药品：%s，价格：%.2f元\n", prescribed_medicine.name, prescribed_medicine.price);
+    int fd = 0;
+    
+    for (int i = 0; i < payment_count; i++) {
+        if (strcmp(payments[i].username, username) == 0) {
+            payments[i].amount_due += prescribed_medicine.price;
+            fd = 1;
+            break;
+        }
+    }
+    
+    if (!fd) {
+        strcpy(payments[payment_count].username, username);
+        payments[payment_count].amount_due = prescribed_medicine.price;
+        payment_count++;
+    }
+}
+
+void makePayment(char username[]) {
+    printf("\n--- 缴费 ---\n");
+
+    // 查找用户待支付金额
+    float amount_due = 0.0;
+    for (int i = 0; i < payment_count; i++) {
+        if (strcmp(payments[i].username, username) == 0) {
+            amount_due = payments[i].amount_due;
+            break;
+        }
+    }
+
+    if (amount_due == 0.0) {
+        printf("没有待支付的费用。\n");
+        return;
+    }
+
+    float payment;
+    printf("您的待支付金额为：%.2f元\n请输入支付金额：", amount_due);
+    scanf("%f", &payment);
+
+    if (payment >= amount_due) {
+        printf("缴费成功，祝您身体健康！\n");
+        // 清除待支付金额
+        for (int i = 0; i < payment_count; i++) {
+            if (strcmp(payments[i].username, username) == 0) {
+                payments[i].amount_due = 0.0;
+                break;
+            }
+        }
+    } else {
+        printf("支付金额不足，请重新支付。\n");
+    }
+}
+
+void hospitalmanagement(char username[]) {
+    int choice;
+
+    while (1) {
+        printf("\n--- 医院管理 ---\n");
+        printf("1. 日常住宿\n");
+        printf("2. 日常作息\n");
+        printf("请选择操作 (1 或 2)，按任意键返回上一界面： ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\n--- 日常住宿 ---\n");
+                printf("每日饭菜费用：30元\n");
+                printf("床费：30元\n");
+                break;
+            case 2:
+                printf("\n--- 日常作息 ---\n");
+                printf("早上：8:00 开放病人家属探亲\n");
+                printf("中午：13:00 至 14:30为午休时间，禁止大声喧哗\n");
+                printf("晚上：21:00 前，除特殊病人外，其他病人的家属\n");
+                break;
+            default:
+                // 在退出前将缴费金额再加上60元
+                for (int i = 0; i < payment_count; i++) {
+                    if (strcmp(payments[i].username, username) == 0) {
+                        payments[i].amount_due += 60.0;  // 加上60元
+                        break;
+                    }
+                }
+                return; // 任意键返回上一界面
+        }
+
+        // 按任意键返回上一界面
+        printf("\n按任意键返回上一界面...\n");
+        getchar(); // 捕获回车
+        getchar(); // 捕获任意键
+    }
+}
+
 void giveFeedback() {
     printf("\n--- 反馈和评价 ---\n");
     // 获取用户输入
@@ -297,13 +476,14 @@ void giveFeedback() {
         printf("您选择了挂号系统反馈\n");
         printf("请输入您的评价：");
         scanf("%s", assessment);
-        printf("您的评价是：%s\n，谢谢您的对挂号系统的反馈", assessment);
+        printf("您的评价是：%s\n谢谢您的对挂号系统的反馈", assessment);
     } else if (strcmp(assessment, "2") == 0) {
         printf("您选择了医生反馈\n");
         printf("请输入您的评价：");
         scanf("%s", assessment);
-        printf("您的评价是：%s\n，谢谢您的对医生的反馈", assessment);
+        printf("您的评价是：%s\n谢谢您的对医生的反馈", assessment);
     } else {
         printf("无效的选项，请重新选择。\n");
     }
 }
+
