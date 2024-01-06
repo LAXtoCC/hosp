@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
  
-// ¶¨Òå½á¹¹Ìå±£´æÓÃ»§ĞÅÏ¢
+// å®šä¹‰ç»“æ„ä½“ä¿å­˜ç”¨æˆ·ä¿¡æ¯
 typedef struct {
     char username[20];
     char password[20];
@@ -10,23 +10,23 @@ typedef struct {
     char id_card[18];
 } User;
  
-// ¶¨Òå½á¹¹Ìå±£´æÒ½ÉúĞÅÏ¢
+// å®šä¹‰ç»“æ„ä½“ä¿å­˜åŒ»ç”Ÿä¿¡æ¯
 typedef struct {
     char name[30];
     char department[20];
-    int is_specialist; // 1: ×¨¼ÒÒ½Éú£¬0: ÆÕÍ¨Ò½Éú
+    int is_specialist; // 1: ä¸“å®¶åŒ»ç”Ÿï¼Œ0: æ™®é€šåŒ»ç”Ÿ
     float registration_fee;
 } Doctor;
  
-// ÔÚÈ«¾Ö¶¨Òå¿ÆÊÒÊı×é
+// åœ¨å…¨å±€å®šä¹‰ç§‘å®¤æ•°ç»„
 const char* departments[] = {
-    "¼±Õï¿Æ", "ÄÚ¿Æ", "Íâ¿Æ", "¶ù¿Æ", "¸¾¿Æ",
-    "ÑÛ¿Æ", "¶ú±Çºí¿Æ", "¿ÚÇ»¿Æ", "Æ¤·ô¿Æ"
+    "æ€¥è¯Šç§‘", "å†…ç§‘", "å¤–ç§‘", "å„¿ç§‘", "å¦‡ç§‘",
+    "çœ¼ç§‘", "è€³é¼»å–‰ç§‘", "å£è…”ç§‘", "çš®è‚¤ç§‘"
 };
 const int NUM_DEPARTMENTS = sizeof(departments) / sizeof(departments[0]);
  
  
-// ¶¨Òå½á¹¹Ìå±£´æ¹ÒºÅĞÅÏ¢
+// å®šä¹‰ç»“æ„ä½“ä¿å­˜æŒ‚å·ä¿¡æ¯
 typedef struct {
     char username[20];
     char doctor_name[30];
@@ -34,7 +34,7 @@ typedef struct {
     char time_slot[20];
 } Registration;
  
-// ¶¨ÒåÊı×é±£´æÓÃ»§¡¢Ò½ÉúºÍ¹ÒºÅĞÅÏ¢
+// å®šä¹‰æ•°ç»„ä¿å­˜ç”¨æˆ·ã€åŒ»ç”Ÿå’ŒæŒ‚å·ä¿¡æ¯
 User users[100];
 Doctor doctors[20];
 Registration registrations[100];
@@ -42,7 +42,7 @@ int user_count = 0;
 int doctor_count = 0;
 int registration_count = 0;
  
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 int registerUser();
 int loginUser();
 void showDepartments();
@@ -55,17 +55,17 @@ void giveFeedback();
  
 int main() {
     int choice;
-    // Ìí¼ÓÕÅÒ½ÉúĞÅÏ¢£¨×¨¼ÒÒ½Éú£©µ½ËùÓĞ¿ÆÊÒ
+    // æ·»åŠ å¼ åŒ»ç”Ÿä¿¡æ¯ï¼ˆä¸“å®¶åŒ»ç”Ÿï¼‰åˆ°æ‰€æœ‰ç§‘å®¤
     for (int i = 0; i < NUM_DEPARTMENTS; i++) {
-        strcpy(doctors[doctor_count].name, "ÕÅÒ½Éú");
+        strcpy(doctors[doctor_count].name, "å¼ åŒ»ç”Ÿ");
         strcpy(doctors[doctor_count].department, departments[i]);
         doctors[doctor_count].is_specialist = 1;
         doctors[doctor_count].registration_fee = 50.0;
         doctor_count++;
     }
-    // Ìí¼ÓÀîÒ½ÉúĞÅÏ¢£¨ÆÕÍ¨Ò½Éú£©µ½ËùÓĞ¿ÆÊÒ
+    // æ·»åŠ æåŒ»ç”Ÿä¿¡æ¯ï¼ˆæ™®é€šåŒ»ç”Ÿï¼‰åˆ°æ‰€æœ‰ç§‘å®¤
     for (int i = 0; i < NUM_DEPARTMENTS; i++) {
-        strcpy(doctors[doctor_count].name, "ÀîÒ½Éú");
+        strcpy(doctors[doctor_count].name, "æåŒ»ç”Ÿ");
         strcpy(doctors[doctor_count].department, departments[i]);
         doctors[doctor_count].is_specialist = 0;
         doctors[doctor_count].registration_fee = 30.0;
@@ -73,7 +73,7 @@ int main() {
     }
  
     while (1) {
-        printf("\n1. ×¢²á\n2. µÇÂ¼\n3. ÍË³ö\nÇëÑ¡Ôñ²Ù×÷£º");
+        printf("\n1. æ³¨å†Œ\n2. ç™»å½•\n3. é€€å‡º\nè¯·é€‰æ‹©æ“ä½œï¼š");
         scanf("%d", &choice);
  
         switch (choice) {
@@ -84,7 +84,7 @@ int main() {
                 if (loginUser()) {
                     int loggedIn = 1;
                     while (loggedIn) {
-                        printf("\n1. Ô¤Ô¼¹ÒºÅ\n2. ²éÑ¯¹ÒºÅ\n3. È¡ÏûÔ¤Ô¼\n4. ·´À¡ºÍÆÀ¼Û\n5. ÍË³ö\nÇëÑ¡Ôñ²Ù×÷£º");
+                        printf("\n1. é¢„çº¦æŒ‚å·\n2. æŸ¥è¯¢æŒ‚å·\n3. å–æ¶ˆé¢„çº¦\n4. åé¦ˆå’Œè¯„ä»·\n5. é€€å‡º\nè¯·é€‰æ‹©æ“ä½œï¼š");
                         scanf("%d", &choice);
  
                         switch (choice) {
@@ -104,7 +104,7 @@ int main() {
                                 loggedIn = 0;
                                 break;
                             default:
-                                printf("ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØĞÂÊäÈë¡£\n");
+                                printf("æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚\n");
                         }
                     }
                 }
@@ -112,7 +112,7 @@ int main() {
             case 3:
                 exit(0);
             default:
-                printf("ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØĞÂÊäÈë¡£\n");
+                printf("æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚\n");
         }
     }
  
@@ -120,17 +120,17 @@ int main() {
 }
  
 int registerUser() {
-    printf("\n--- ÓÃ»§×¢²á ---\n");
-    printf("ÇëÊäÈëÓÃ»§Ãû£º");
+    printf("\n--- ç”¨æˆ·æ³¨å†Œ ---\n");
+    printf("è¯·è¾“å…¥ç”¨æˆ·åï¼š");
     scanf("%s", users[user_count].username);
-    printf("ÇëÊäÈëÃÜÂë£º");
+    printf("è¯·è¾“å…¥å¯†ç ï¼š");
     scanf("%s", users[user_count].password);
-    printf("ÇëÊäÈëÊÖ»úºÅ£º");
+    printf("è¯·è¾“å…¥æ‰‹æœºå·ï¼š");
     scanf("%s", users[user_count].phone);
-    printf("ÇëÊäÈëÉí·İÖ¤ºÅ£º");
+    printf("è¯·è¾“å…¥èº«ä»½è¯å·ï¼š");
     scanf("%s", users[user_count].id_card);
  
-    printf("×¢²á³É¹¦£¡\n");
+    printf("æ³¨å†ŒæˆåŠŸï¼\n");
     user_count++;
  
     return 0;
@@ -139,63 +139,63 @@ int loginUser() {
     char username[20];
     char password[20];
  
-    printf("\n--- ÓÃ»§µÇÂ¼ ---\n");
-    printf("ÇëÊäÈëÓÃ»§Ãû£º");
+    printf("\n--- ç”¨æˆ·ç™»å½• ---\n");
+    printf("è¯·è¾“å…¥ç”¨æˆ·åï¼š");
     scanf("%s", username);
-    printf("ÇëÊäÈëÃÜÂë£º");
+    printf("è¯·è¾“å…¥å¯†ç ï¼š");
     scanf("%s", password);
  
     for (int i = 0; i < user_count; i++) {
         if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
-            printf("µÇÂ¼³É¹¦£¡\n");
-            return 1; // µÇÂ¼³É¹¦
+            printf("ç™»å½•æˆåŠŸï¼\n");
+            return 1; // ç™»å½•æˆåŠŸ
         }
     }
  
-    printf("ÓÃ»§Ãû»òÃÜÂë´íÎó£¬µÇÂ¼Ê§°Ü¡£\n");
-    return 0; // µÇÂ¼Ê§°Ü
+    printf("ç”¨æˆ·åæˆ–å¯†ç é”™è¯¯ï¼Œç™»å½•å¤±è´¥ã€‚\n");
+    return 0; // ç™»å½•å¤±è´¥
 }
  
 void showDepartments() {
-    printf("\n--- ¿ÆÊÒÁĞ±í ---\n");
-    printf("1. ¼±Õï¿Æ\n2. ÄÚ¿Æ\n3. Íâ¿Æ\n4. ¶ù¿Æ\n5. ¸¾¿Æ\n6. ÑÛ¿Æ\n7. ¶ú±Çºí¿Æ\n8. ¿ÚÇ»¿Æ\n9. Æ¤·ô¿Æ\n");
+    printf("\n--- ç§‘å®¤åˆ—è¡¨ ---\n");
+    printf("1. æ€¥è¯Šç§‘\n2. å†…ç§‘\n3. å¤–ç§‘\n4. å„¿ç§‘\n5. å¦‡ç§‘\n6. çœ¼ç§‘\n7. è€³é¼»å–‰ç§‘\n8. å£è…”ç§‘\n9. çš®è‚¤ç§‘\n");
  
     int departmentChoice;
-    printf("ÇëÑ¡Ôñ¿ÆÊÒ£º");
+    printf("è¯·é€‰æ‹©ç§‘å®¤ï¼š");
     scanf("%d", &departmentChoice);
  
     char department[20];
  
     switch (departmentChoice) {
         case 1:
-            strcpy(department, "¼±Õï¿Æ");
+            strcpy(department, "æ€¥è¯Šç§‘");
             break;
         case 2:
-            strcpy(department, "ÄÚ¿Æ");
+            strcpy(department, "å†…ç§‘");
             break;
         case 3:
-            strcpy(department, "Íâ¿Æ");
+            strcpy(department, "å¤–ç§‘");
             break;
         case 4:
-            strcpy(department, "¶ù¿Æ");
+            strcpy(department, "å„¿ç§‘");
             break;
         case 5:
-            strcpy(department, "¸¾¿Æ");
+            strcpy(department, "å¦‡ç§‘");
             break;
         case 6:
-            strcpy(department, "ÑÛ¿Æ");
+            strcpy(department, "çœ¼ç§‘");
             break;
         case 7:
-            strcpy(department, "¶ú±Çºí¿Æ");
+            strcpy(department, "è€³é¼»å–‰ç§‘");
             break;
         case 8:
-            strcpy(department, "¿ÚÇ»¿Æ");
+            strcpy(department, "å£è…”ç§‘");
             break;
         case 9:
-            strcpy(department, "Æ¤·ô¿Æ");
+            strcpy(department, "çš®è‚¤ç§‘");
             break;
         default:
-            printf("ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØĞÂÊäÈë¡£\n");
+            printf("æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚\n");
             return;
     }
  
@@ -203,107 +203,107 @@ void showDepartments() {
 }
  
 void showDoctors(char department[]) {
-    printf("\n--- Ò½ÉúÁĞ±í ---\n");
+    printf("\n--- åŒ»ç”Ÿåˆ—è¡¨ ---\n");
  
     for (int i = 0; i < doctor_count; i++) {
         if (strcmp(doctors[i].department, department) == 0) {
-            printf("%d. %s (%s)\n", i + 1, doctors[i].name, doctors[i].is_specialist ? "×¨¼Ò" : "ÆÕÍ¨Ò½Éú");
+            printf("%d. %s (%s)\n", i + 1, doctors[i].name, doctors[i].is_specialist ? "ä¸“å®¶" : "æ™®é€šåŒ»ç”Ÿ");
         }
     }
  
     int doctorChoice;
-    printf("ÇëÑ¡ÔñÒ½Éú£¨ÊäÈëÒ½Éú±àºÅ£©£º");
+    printf("è¯·é€‰æ‹©åŒ»ç”Ÿï¼ˆè¾“å…¥åŒ»ç”Ÿç¼–å·ï¼‰ï¼š");
     scanf("%d", &doctorChoice);
  
     if (doctorChoice >= 1 && doctorChoice <= doctor_count) {
         int index = doctorChoice - 1;
         char time_slot[20];
  
-        printf("ÇëÊäÈë¹ÒºÅÊ±¼ä¶Î£º");
+        printf("è¯·è¾“å…¥æŒ‚å·æ—¶é—´æ®µï¼š");
         scanf("%s", time_slot);
  
         int result = makeAppointment(users[user_count - 1].username, time_slot);
         if (result == 1) {
-            printf("¹ÒºÅ³É¹¦£¡\n");
+            printf("æŒ‚å·æˆåŠŸï¼\n");
             strcpy(registrations[registration_count].username, users[user_count - 1].username);
             strcpy(registrations[registration_count].doctor_name, doctors[index].name);
             strcpy(registrations[registration_count].department, doctors[index].department);
             strcpy(registrations[registration_count].time_slot, time_slot);
             registration_count++;
         } else {
-            printf("¹ÒºÅÊ§°Ü£¬Ñ¡ÔñµÄÊ±¼ä¶ÎÒÑ±»Ô¤Ô¼¡£\n");
+            printf("æŒ‚å·å¤±è´¥ï¼Œé€‰æ‹©çš„æ—¶é—´æ®µå·²è¢«é¢„çº¦ã€‚\n");
         }
     } else {
-        printf("ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØĞÂÊäÈë¡£\n");
+        printf("æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡æ–°è¾“å…¥ã€‚\n");
     }
 }
  
 int makeAppointment(char username[], char time_slot[20]) {
  
-    // ¼ì²éÊÇ·ñÓĞÖØ¸´µÄ¹ÒºÅĞÅÏ¢
+    // æ£€æŸ¥æ˜¯å¦æœ‰é‡å¤çš„æŒ‚å·ä¿¡æ¯
     for (int i = 0; i < registration_count; i++) {
         if (strcmp(registrations[i].time_slot, time_slot) == 0) {
-            return 0; // ¹ÒºÅÊ§°Ü£¬Ñ¡ÔñµÄÊ±¼ä¶ÎÒÑ±»Ô¤Ô¼
+            return 0; // æŒ‚å·å¤±è´¥ï¼Œé€‰æ‹©çš„æ—¶é—´æ®µå·²è¢«é¢„çº¦
         }
     }
  
-    return 1; // ¹ÒºÅ³É¹¦
+    return 1; // æŒ‚å·æˆåŠŸ
 }
  
 void viewRegistrationHistory(char username[]) {
-    printf("\n--- ¹ÒºÅÀúÊ· ---\n");
+    printf("\n--- æŒ‚å·å†å² ---\n");
  
     for (int i = 0; i < registration_count; i++) {
         if (strcmp(registrations[i].username, username) == 0) {
-            printf("%d. Ò½Éú£º%s£¬¿ÆÊÒ£º%s£¬Ê±¼ä¶Î£º%s\n", i+1, registrations[i].doctor_name, registrations[i].department, registrations[i].time_slot);
+            printf("%d. åŒ»ç”Ÿï¼š%sï¼Œç§‘å®¤ï¼š%sï¼Œæ—¶é—´æ®µï¼š%s\n", i+1, registrations[i].doctor_name, registrations[i].department, registrations[i].time_slot);
         }
     }
 }
 
 void cancelAppointment(char username[]) {
-    printf("\n--- È¡ÏûÔ¤Ô¼ ---\n");
+    printf("\n--- å–æ¶ˆé¢„çº¦ ---\n");
  
     viewRegistrationHistory(username);
  
     int cancelIndex;
-    printf("ÇëÊäÈëÒªÈ¡ÏûµÄ¹ÒºÅĞòºÅ£º");
+    printf("è¯·è¾“å…¥è¦å–æ¶ˆçš„æŒ‚å·åºå·ï¼š");
     scanf("%d", &cancelIndex);
  
-    // ÑéÖ¤ÊäÈëÊÇ·ñÓĞĞ§
+    // éªŒè¯è¾“å…¥æ˜¯å¦æœ‰æ•ˆ
     if (cancelIndex >= 1 && cancelIndex <= registration_count) {
-        // ½«ĞòºÅ×ª»»ÎªÊı×éË÷Òı
+        // å°†åºå·è½¬æ¢ä¸ºæ•°ç»„ç´¢å¼•
         int i = cancelIndex - 1;
 
-        // ÕÒµ½Æ¥ÅäµÄ¹ÒºÅĞÅÏ¢£¬½øĞĞÈ¡Ïû
+        // æ‰¾åˆ°åŒ¹é…çš„æŒ‚å·ä¿¡æ¯ï¼Œè¿›è¡Œå–æ¶ˆ
         for (int j = i; j < registration_count - 1; j++) {
             registrations[j] = registrations[j + 1];
         }
         registration_count--;
 
-        printf("¹ÒºÅÈ¡Ïû³É¹¦£¡\n");
+        printf("æŒ‚å·å–æ¶ˆæˆåŠŸï¼\n");
     } else {
-        printf("ÎŞĞ§µÄ¹ÒºÅĞòºÅ¡£\n");
+        printf("æ— æ•ˆçš„æŒ‚å·åºå·ã€‚\n");
     }
 }
  
 void giveFeedback() {
-    printf("\n--- ·´À¡ºÍÆÀ¼Û ---\n");
-    // »ñÈ¡ÓÃ»§ÊäÈë
+    printf("\n--- åé¦ˆå’Œè¯„ä»· ---\n");
+    // è·å–ç”¨æˆ·è¾“å…¥
     char assessment[100];
-    printf("ÇëÑ¡Ôñ·´À¡ÀàĞÍ£¨1.¹ÒºÅÏµÍ³·´À¡ 2.Ò½Éú·´À¡£©£º");
+    printf("è¯·é€‰æ‹©åé¦ˆç±»å‹ï¼ˆ1.æŒ‚å·ç³»ç»Ÿåé¦ˆ 2.åŒ»ç”Ÿåé¦ˆï¼‰ï¼š");
     scanf("%s", assessment);
-    // ¸ù¾İÓÃ»§Ñ¡ÔñÊä³ö²»Í¬µÄ·´À¡ÌáÊ¾
+    // æ ¹æ®ç”¨æˆ·é€‰æ‹©è¾“å‡ºä¸åŒçš„åé¦ˆæç¤º
     if (strcmp(assessment, "1") == 0) {
-        printf("ÄúÑ¡ÔñÁË¹ÒºÅÏµÍ³·´À¡\n");
-        printf("ÇëÊäÈëÄúµÄÆÀ¼Û£º");
+        printf("æ‚¨é€‰æ‹©äº†æŒ‚å·ç³»ç»Ÿåé¦ˆ\n");
+        printf("è¯·è¾“å…¥æ‚¨çš„è¯„ä»·ï¼š");
         scanf("%s", assessment);
-        printf("ÄúµÄÆÀ¼ÛÊÇ£º%s\n£¬Ğ»Ğ»ÄúµÄ¶Ô¹ÒºÅÏµÍ³µÄ·´À¡", assessment);
+        printf("æ‚¨çš„è¯„ä»·æ˜¯ï¼š%s\nï¼Œè°¢è°¢æ‚¨çš„å¯¹æŒ‚å·ç³»ç»Ÿçš„åé¦ˆ", assessment);
     } else if (strcmp(assessment, "2") == 0) {
-        printf("ÄúÑ¡ÔñÁËÒ½Éú·´À¡\n");
-        printf("ÇëÊäÈëÄúµÄÆÀ¼Û£º");
+        printf("æ‚¨é€‰æ‹©äº†åŒ»ç”Ÿåé¦ˆ\n");
+        printf("è¯·è¾“å…¥æ‚¨çš„è¯„ä»·ï¼š");
         scanf("%s", assessment);
-        printf("ÄúµÄÆÀ¼ÛÊÇ£º%s\n£¬Ğ»Ğ»ÄúµÄ¶ÔÒ½ÉúµÄ·´À¡", assessment);
+        printf("æ‚¨çš„è¯„ä»·æ˜¯ï¼š%s\nï¼Œè°¢è°¢æ‚¨çš„å¯¹åŒ»ç”Ÿçš„åé¦ˆ", assessment);
     } else {
-        printf("ÎŞĞ§µÄÑ¡Ïî£¬ÇëÖØĞÂÑ¡Ôñ¡£\n");
+        printf("æ— æ•ˆçš„é€‰é¡¹ï¼Œè¯·é‡æ–°é€‰æ‹©ã€‚\n");
     }
 }
