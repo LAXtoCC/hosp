@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
  
 // 定义结构体保存用户信息
 typedef struct {
@@ -17,6 +18,11 @@ typedef struct {
     int is_specialist; // 1: 专家医生，0: 普通医生
     float registration_fee;
 } Doctor;
+
+ typedef struct {
+ 	char his1[100];
+ 	char his2[100];
+}h ;
  
 // 在全局定义科室数组
 const char* departments[] = {
@@ -68,6 +74,9 @@ Registration registrations[100];
 int user_count = 0;
 int doctor_count = 0;
 int registration_count = 0;
+h history1[100];
+h history2[100];
+int m=1,n=1;
  
 // 函数声明
 int registerUser();
@@ -82,9 +91,12 @@ void giveFeedback();
 void seeDoctor(char username[]);
 void makePayment(char username[]);
 void hospitalmanagement(char username[]);
+void history();
+void location();
  
 int main() {
-    int choice;
+    char choice1;
+    char choice2;
     // 添加张医生信息（专家医生）到所有科室
     for (int i = 0; i < NUM_DEPARTMENTS; i++) {
         strcpy(doctors[doctor_count].name, "张医生");
@@ -103,52 +115,96 @@ int main() {
     }
  
     while (1) {
-        printf("\n1. 注册\n2. 登录\n3. 退出\n请选择操作：");
-        scanf("%d", &choice);
+    	system("cls");
+        printf("\033[33m");  // 输出黄色文本
+    	printf("\n#################################################################################\n");
+    	printf("\n▓                          * 医院线上交互平台  *                           ▓\n");
+    	printf("\n*********************************************************************************\n");
+    	printf("\n          ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆\n");
+	    printf("          |◆|******|◆|                                     |◆|******|◆|\n");
+	    printf("          |◆|******|◆|       ☆ 注册    请按 1         |◆|******|◆|\n"); 
+	    printf("          |◆|******|◆|       ☆ 登录    请按 2         |◆|******|◆|\n");
+	 	printf("          |◆|******|◆|       ☆ 退出    请按 3         |◆|******|◆|\n");
+	 	printf("          |◆|******|◆|                                     |◆|******|◆|\n");
+	 	printf("          ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆\n");
+	 	printf("\n#################################################################################\n");
+        printf("\033[0m"); // 重置文本颜色
+        scanf("%s", &choice1);
  
-        switch (choice) {
-            case 1:
+        switch (choice1) {
+            case '1':
                 registerUser();
+                printf("按Enter继续进入菜单");
+				getch(); 
                 break;
-            case 2:
+            case '2':
                 if (loginUser()) {
                     int loggedIn = 1;
                     while (loggedIn) {
-                        printf("\n1. 预约挂号\n2. 查询挂号\n3. 取消预约\n4. 反馈和评价\n5. 看病\n6. 缴费\n7. 住院管理\n9. 退出\n请选择操作：");
-                        scanf("%d", &choice);
+                    	system("cls");
+                    	printf("\033[31m"); // 设置文本颜色为红色
+		              	printf("\n#################################################################################\n");
+					    printf("\n▓                               * 欢迎使用  *                                 ▓\n");
+					    printf("\n#################################################################################\n");
+					 	printf("\n          ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆\n"); 
+					 	printf("         |◆|******|◆|        ☆ 预约挂号       请按 1        |◆|******|◆|\n"); 
+						printf("         |◆|******|◆|        ☆ 查询挂号       请按 2        |◆|******|◆|\n");
+					 	printf("         |◆|******|◆|        ☆ 取消预约       请按 3        |◆|******|◆|\n"); 
+						printf("         |◆|******|◆|        ☆ 反馈和评价     请按 4        |◆|******|◆|\n");
+					    printf("         |◆|******|◆|        ☆ 看病           请按 5        |◆|******|◆|\n");
+					 	printf("         |◆|******|◆|        ☆ 缴费           请按 6        |◆|******|◆|\n"); 
+					 	printf("         |◆|******|◆|        ☆ 住院管理       请按 7        |◆|******|◆|\n"); 
+					 	printf("         |◆|******|◆|        ☆ 导航           请按 8        |◆|******|◆|\n"); 
+					 	printf("         |◆|******|◆|        ☆ 反馈记录       请按 9        |◆|******|◆|\n"); 
+					 	printf("         |◆|******|◆|        ☆ 退出系统       请按 x        |◆|******|◆|\n"); 
+					 	printf("         |◆|******|◆|                                       |◆|******|◆|\n");
+					 	printf("          ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆\n");
+					    printf("\n#################################################################################\n");
+					    printf("\n▓                          *******************************                    ▓\n");
+					    printf("\n#################################################################################\n");
+					 	printf("\n\n\t\t##请输入你的选择：");
+                        scanf("%s", &choice2);
+                        printf("\033[0m"); // 重置文本颜色
  
-                        switch (choice) {
-                            case 1:
+                        switch (choice2) {
+                            case '1':
                                 showDepartments();
                                 break;
-                            case 2:
+                            case '2':
                                 viewRegistrationHistory(users[user_count - 1].username);
                                 break;
-                            case 3:
+                            case '3':
                                 cancelAppointment(users[user_count - 1].username);
                                 break;
-                            case 4:
+                            case '4':
                                 giveFeedback();
                                 break;
-                            case 5:
+                            case '5':
                                 seeDoctor(users[user_count - 1].username);
                                 break;
-                            case 6:
+                            case '6':
                                 makePayment(users[user_count - 1].username);
                                 break;
-                            case 7:
+                            case '7':
                             	hospitalmanagement(users[user_count - 1].username);
                                 break;
-                            case 9:
+                            case '8':
+                            	location();
+                            	break;
+                            case '9':
+                            	history();
+                            	break;
+                            case 'x':
                                 loggedIn = 0;
                                 break;
                             default:
-                                printf("无效的选择，请重新输入。\n");
-                        }
-                    }
+							     printf("无效的选择，请重新输入。\n");
+                         
+                        	}
+                	}
                 }
                 break;
-            case 3:
+            case '3':
                 exit(0);
             default:
                 printf("无效的选择，请重新输入。\n");
@@ -329,7 +385,7 @@ void cancelAppointment(char username[]) {
         printf("无效的挂号序号。\n");
     }
 }
-
+    
 void seeDoctor(char username[]) {
     printf("\n--- 看病 ---\n");
     int found = viewRegistrationHistory(username);
@@ -465,25 +521,85 @@ void hospitalmanagement(char username[]) {
     }
 }
 
+void history() {
+    printf("反馈历史记录:\n");
+    int s,x,y;
+    printf("1.挂号系统反馈记录:\n");
+    printf("2.医生反馈记录:\n");
+    scanf("%d",&s);
+    if(s==1){
+	 printf("1.挂号系统反馈记录\n");
+	 x=1;
+    while (x <m) {
+        printf("%d:%s\n",x,history1[x].his1);x++;
+   		}
+    }
+     if(s==2){printf("2.医生反馈记录:\n");
+	 y=1;
+    while (y <n) {
+        printf("%d:%s\n",y,history2[y].his2);y++;
+   		}
+    }
+    if(s!=1&&s!=2){printf("\n错误输入\n");
+    }
+}
+
 void giveFeedback() {
     printf("\n--- 反馈和评价 ---\n");
     // 获取用户输入
-    char assessment[100];
+    char a[20];
     printf("请选择反馈类型（1.挂号系统反馈 2.医生反馈）：");
-    scanf("%s", assessment);
+    scanf("%s", a);
     // 根据用户选择输出不同的反馈提示
-    if (strcmp(assessment, "1") == 0) {
+    if (strcmp(a, "1") == 0) {
         printf("您选择了挂号系统反馈\n");
         printf("请输入您的评价：");
-        scanf("%s", assessment);
-        printf("您的评价是：%s\n谢谢您的对挂号系统的反馈", assessment);
-    } else if (strcmp(assessment, "2") == 0) {
+        scanf("%s",&history1[m].his1);
+        printf("您的评价是：%s\n，谢谢您的对挂号系统的反馈",history1[m].his1);m++;
+    } else if (strcmp(a, "2") == 0) {
         printf("您选择了医生反馈\n");
         printf("请输入您的评价：");
-        scanf("%s", assessment);
-        printf("您的评价是：%s\n谢谢您的对医生的反馈", assessment);
+        scanf("%s",&history2[n].his2);
+        printf("您的评价是：%s\n，谢谢您的对医生的反馈",history2[n].his2);n++;
     } else {
         printf("无效的选项，请重新选择。\n");
     }
 }
 
+//导航功能
+void location() {
+	int num;
+	printf("1. 急诊科\n2. 内科\n3. 外科\n4. 儿科\n5. 妇科\n6. 眼科\n7. 耳鼻喉科\n8. 口腔科\n9. 皮肤科\n");
+	scanf("%d",&num);
+    switch (num) {
+        case 1:
+            printf("地点：门诊部2f N202\n");
+            break;
+        case 2:
+            printf("地点：门诊部1f N102\n");
+            break;
+        case 3:
+            printf("地点：门诊部3f S303\n");
+            break;
+        case 4:
+            printf("地点：门诊部3f N301\n");
+            break;
+        case 5:
+            printf("地点：门诊部2f N202\n");
+            break;
+        case 6:
+            printf("地点：门诊部2f N203\n");
+            break;
+        case 7:
+            printf("地点：门诊部3f N308\n");
+            break;
+        case 8:
+            printf("地点：门诊部5f S505\n");
+            break;
+        case 9:
+            printf("地点：门诊部4f N401\n");
+            break;
+        default:
+            printf("无效的输入！请输入1-9之间的数字。\n");
+    }
+}
